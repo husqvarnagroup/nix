@@ -550,6 +550,10 @@ sockopt_impl!(
 sockopt_impl!(
     /// Set the unicast hop limit for the socket.
     Ipv6Ttl, Both, libc::IPPROTO_IPV6, libc::IPV6_UNICAST_HOPS, libc::c_int);
+#[cfg(any(target_os = "android", target_os = "linux"))]
+sockopt_impl!(
+    /// Control receiving of the traffic class.
+    Ipv6RecvTclass, Both, libc::IPPROTO_IPV6, libc::IPV6_RECVTCLASS, bool);
 
 #[allow(missing_docs)]
 // Not documented by Linux!

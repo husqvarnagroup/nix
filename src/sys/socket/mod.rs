@@ -631,6 +631,8 @@ pub enum ControlMessageOwned {
         target_os = "openbsd",
     ))]
     Ipv4RecvDstAddr(libc::in_addr),
+    #[cfg(target_os = "linux")]
+    Ipv6TrafficClass(libc::c_int),
 
     /// UDP Generic Receive Offload (GRO) allows receiving multiple UDP
     /// packets from a single sender.
@@ -754,6 +756,11 @@ impl ControlMessageOwned {
                 let dl = ptr::read_unaligned(p as *const libc::in_addr);
                 ControlMessageOwned::Ipv4RecvDstAddr(dl)
             },
+            #[cfg(target_os = "linux")]
+            (libc::IPPROTO_IPV6, libc::IPV6_TCLASS) => {
+                let tclass = ptr::read_unaligned(p as *const libc::c_int);
+                ControlMessageOwned::Ipv6TrafficClass(tclass)
+            }
             #[cfg(target_os = "linux")]
             (libc::SOL_UDP, libc::UDP_GRO) => {
                 let gso_size: u16 = ptr::read_unaligned(p as *const _);
@@ -912,6 +919,9 @@ pub enum ControlMessage<'a> {
               target_os = "ios",))]
     Ipv6PacketInfo(&'a libc::in6_pktinfo),
 
+    #[cfg(target_os = "linux")]
+    Ipv6TrafficClass(&'a libc::c_int),
+
     /// SO_RXQ_OVFL indicates that an unsigned 32 bit value
     /// ancilliary msg (cmsg) should be attached to recieved
     /// skbs indicating the number of packets dropped by the
@@ -1009,6 +1019,8 @@ impl<'a> ControlMessage<'a> {
                       target_os = "netbsd", target_os = "freebsd",
                       target_os = "android", target_os = "ios",))]
             ControlMessage::Ipv6PacketInfo(info) => info as *const _ as *const u8,
+            #[cfg(target_os = "linux")]
+            ControlMessage::Ipv6TrafficClass(tclass) => tclass as *const _ as *const u8,
             #[cfg(any(target_os = "android", target_os = "fuchsia", target_os = "linux"))]
             ControlMessage::RxqOvfl(drop_count) => {
                 drop_count as *const _ as *const u8
@@ -1061,6 +1073,8 @@ impl<'a> ControlMessage<'a> {
               target_os = "netbsd", target_os = "freebsd",
               target_os = "android", target_os = "ios",))]
             ControlMessage::Ipv6PacketInfo(info) => mem::size_of_val(info),
+            #[cfg(target_os = "linux")]
+            ControlMessage::Ipv6TrafficClass(tclass) => mem::size_of_val(tclass),
             #[cfg(any(target_os = "android", target_os = "fuchsia", target_os = "linux"))]
             ControlMessage::RxqOvfl(drop_count) => {
                 mem::size_of_val(drop_count)
@@ -1089,6 +1103,8 @@ impl<'a> ControlMessage<'a> {
               target_os = "netbsd", target_os = "freebsd",
               target_os = "android", target_os = "ios",))]
             ControlMessage::Ipv6PacketInfo(_) => libc::IPPROTO_IPV6,
+            #[cfg(target_os = "linux")]
+            ControlMessage::Ipv6TrafficClass(_) => libc::IPPROTO_IPV6,
             #[cfg(any(target_os = "android", target_os = "fuchsia", target_os = "linux"))]
             ControlMessage::RxqOvfl(_) => libc::SOL_SOCKET,
         }
@@ -1126,6 +1142,8 @@ impl<'a> ControlMessage<'a> {
                       target_os = "netbsd", target_os = "freebsd",
                       target_os = "android", target_os = "ios",))]
             ControlMessage::Ipv6PacketInfo(_) => libc::IPV6_PKTINFO,
+            #[cfg(target_os = "linux")]
+            ControlMessage::Ipv6TrafficClass(_) => libc::IPV6_TCLASS,
             #[cfg(any(target_os = "android", target_os = "fuchsia", target_os = "linux"))]
             ControlMessage::RxqOvfl(_) => {
                 libc::SO_RXQ_OVFL
