@@ -1088,6 +1088,10 @@ sockopt_impl!(
     libc::IPV6_DONTFRAG,
     bool
 );
+#[cfg(any(target_os = "android", target_os = "linux"))]
+sockopt_impl!(
+    /// Control receiving of the traffic class.
+    Ipv6RecvTclass, Both, libc::IPPROTO_IPV6, libc::IPV6_RECVTCLASS, bool);
 
 #[allow(missing_docs)]
 // Not documented by Linux!

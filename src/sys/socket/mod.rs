@@ -1214,6 +1214,19 @@ pub enum ControlMessage<'a> {
     #[cfg_attr(docsrs, doc(cfg(feature = "net")))]
     Ipv6PacketInfo(&'a libc::in6_pktinfo),
 
+    #[cfg(any(
+        target_os = "android",
+        target_os = "freebsd",
+        target_os = "ios",
+        target_os = "linux",
+        target_os = "macos",
+        target_os = "netbsd",
+        target_os = "openbsd",
+    ))]
+    #[cfg(feature = "net")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "net")))]
+    Ipv6TClass(u32),
+
     /// Configure the IPv4 source address with `IP_SENDSRCADDR`.
     #[cfg(any(
         target_os = "netbsd",
@@ -1338,6 +1351,18 @@ impl<'a> ControlMessage<'a> {
                       target_os = "openbsd", target_os = "dragonfly"))]
             #[cfg(feature = "net")]
             ControlMessage::Ipv4SendSrcAddr(addr) => addr as *const _ as *const u8,
+            #[cfg(any(
+                target_os = "android",
+                target_os = "freebsd",
+                target_os = "ios",
+                target_os = "linux",
+                target_os = "macos",
+                target_os = "netbsd",
+                target_os = "openbsd",
+            ))]
+            #[cfg(feature = "net")]
+            #[cfg_attr(docsrs, doc(cfg(feature = "net")))]
+            ControlMessage::Ipv6TClass(tclass) => tclass as *const u32 as *const u8,
             #[cfg(any(target_os = "android", target_os = "fuchsia", target_os = "linux"))]
             ControlMessage::RxqOvfl(drop_count) => {
                 drop_count as *const _ as *const u8
@@ -1401,6 +1426,17 @@ impl<'a> ControlMessage<'a> {
                       target_os = "openbsd", target_os = "dragonfly"))]
             #[cfg(feature = "net")]
             ControlMessage::Ipv4SendSrcAddr(addr) => mem::size_of_val(addr),
+            #[cfg(any(
+                target_os = "android",
+                target_os = "freebsd",
+                target_os = "ios",
+                target_os = "linux",
+                target_os = "macos",
+                target_os = "netbsd",
+                target_os = "openbsd",
+            ))]
+            #[cfg(feature = "net")]
+            ControlMessage::Ipv6TClass(tclass) => mem::size_of_val(&tclass),
             #[cfg(any(target_os = "android", target_os = "fuchsia", target_os = "linux"))]
             ControlMessage::RxqOvfl(drop_count) => {
                 mem::size_of_val(drop_count)
@@ -1440,6 +1476,17 @@ impl<'a> ControlMessage<'a> {
                       target_os = "openbsd", target_os = "dragonfly"))]
             #[cfg(feature = "net")]
             ControlMessage::Ipv4SendSrcAddr(_) => libc::IPPROTO_IP,
+            #[cfg(any(
+                target_os = "android",
+                target_os = "freebsd",
+                target_os = "ios",
+                target_os = "linux",
+                target_os = "macos",
+                target_os = "netbsd",
+                target_os = "openbsd",
+            ))]
+            #[cfg(feature = "net")]
+            ControlMessage::Ipv6TClass(_) => libc::IPPROTO_IPV6,
             #[cfg(any(target_os = "android", target_os = "fuchsia", target_os = "linux"))]
             ControlMessage::RxqOvfl(_) => libc::SOL_SOCKET,
             #[cfg(target_os = "linux")]
@@ -1486,6 +1533,17 @@ impl<'a> ControlMessage<'a> {
                       target_os = "openbsd", target_os = "dragonfly"))]
             #[cfg(feature = "net")]
             ControlMessage::Ipv4SendSrcAddr(_) => libc::IP_SENDSRCADDR,
+            #[cfg(any(
+                target_os = "android",
+                target_os = "freebsd",
+                target_os = "ios",
+                target_os = "linux",
+                target_os = "macos",
+                target_os = "netbsd",
+                target_os = "openbsd",
+            ))]
+            #[cfg(feature = "net")]
+            ControlMessage::Ipv6TClass(_) => libc::IPV6_TCLASS,
             #[cfg(any(target_os = "android", target_os = "fuchsia", target_os = "linux"))]
             ControlMessage::RxqOvfl(_) => {
                 libc::SO_RXQ_OVFL
