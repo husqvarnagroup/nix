@@ -792,6 +792,28 @@ pub enum ControlMessageOwned {
     #[cfg_attr(docsrs, doc(cfg(feature = "net")))]
     Ipv6PacketInfo(libc::in6_pktinfo),
     #[cfg(any(
+        target_os = "android",
+        target_os = "freebsd",
+        target_os = "ios",
+        target_os = "linux",
+        target_os = "macos",
+    ))]
+    #[cfg(feature = "net")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "net")))]
+    Ipv4Tos(u8),
+    #[cfg(any(
+        target_os = "android",
+        target_os = "freebsd",
+        target_os = "ios",
+        target_os = "linux",
+        target_os = "macos",
+        target_os = "netbsd",
+        target_os = "openbsd",
+    ))]
+    #[cfg(feature = "net")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "net")))]
+    Ipv6TClass(u32),
+    #[cfg(any(
         target_os = "freebsd",
         target_os = "ios",
         target_os = "macos",
@@ -955,6 +977,32 @@ impl ControlMessageOwned {
             (libc::IPPROTO_IP, libc::IP_PKTINFO) => {
                 let info = ptr::read_unaligned(p as *const libc::in_pktinfo);
                 ControlMessageOwned::Ipv4PacketInfo(info)
+            }
+            #[cfg(any(
+                target_os = "android",
+                target_os = "freebsd",
+                target_os = "ios",
+                target_os = "linux",
+                target_os = "macos",
+            ))]
+            #[cfg(feature = "net")]
+            (libc::IPPROTO_IP, libc::IP_TOS) => {
+                let tos = ptr::read_unaligned(p as *const u8);
+                ControlMessageOwned::Ipv4Tos(tos)
+            }
+            #[cfg(any(
+                target_os = "android",
+                target_os = "freebsd",
+                target_os = "ios",
+                target_os = "linux",
+                target_os = "macos",
+                target_os = "netbsd",
+                target_os = "openbsd",
+            ))]
+            #[cfg(feature = "net")]
+            (libc::IPPROTO_IPV6, libc::IPV6_TCLASS) => {
+                let tclass = ptr::read_unaligned(p as *const u32);
+                ControlMessageOwned::Ipv6TClass(tclass)
             }
             #[cfg(any(
                 target_os = "freebsd",

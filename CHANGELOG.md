@@ -48,6 +48,10 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   ([#2097](https://github.com/nix-rust/nix/pull/2097))
 - Add the ability to set `kevent_flags` on `SigEvent`.
   ([#1731](https://github.com/nix-rust/nix/pull/1731))
+- Removed `flock` from `::nix::fcntl` on Solaris. ([#2082](https://github.com/nix-rust/nix/pull/2082))
+- Use I/O safety with `copy_file_range`, and expose it on FreeBSD.
+  (#[1906](https://github.com/nix-rust/nix/pull/1906))
+- Added `IP_RECVTOS` and `IPV6_RECVTCLASS` socket options. ([#2081](https://github.com/nix-rust/nix/pull/2081))
 
 ### Changed
 

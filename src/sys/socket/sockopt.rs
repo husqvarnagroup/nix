@@ -867,6 +867,44 @@ sockopt_impl!(
     bool
 );
 #[cfg(any(
+    target_os = "android",
+    target_os = "freebsd",
+    target_os = "ios",
+    target_os = "linux",
+    target_os = "macos",
+))]
+#[cfg(feature = "net")]
+sockopt_impl!(
+    #[cfg_attr(docsrs, doc(cfg(feature = "net")))]
+    /// Set delivery of the `IP_TOS` control message on incoming
+    /// datagrams.
+    Ipv4RecvTos,
+    Both,
+    libc::IPPROTO_IP,
+    libc::IP_RECVTOS,
+    bool
+);
+#[cfg(any(
+    target_os = "android",
+    target_os = "freebsd",
+    target_os = "ios",
+    target_os = "linux",
+    target_os = "macos",
+    target_os = "netbsd",
+    target_os = "openbsd",
+))]
+#[cfg(feature = "net")]
+sockopt_impl!(
+    #[cfg_attr(docsrs, doc(cfg(feature = "net")))]
+    /// Set delivery of the `IPV6_TCLASS` control message on incoming
+    /// datagrams.
+    Ipv6RecvTClass,
+    Both,
+    libc::IPPROTO_IPV6,
+    libc::IPV6_RECVTCLASS,
+    bool
+);
+#[cfg(any(
     target_os = "freebsd",
     target_os = "ios",
     target_os = "macos",
