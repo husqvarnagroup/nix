@@ -2152,7 +2152,7 @@ pub fn test_recv_ipv6pktinfo() {
     }
 }
 
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "android", target_os = "linux"))]
 #[test]
 pub fn test_tos_ipv4() {
     use nix::sys::socket::sockopt::{IpTos, Ipv4RecvTos};
@@ -2230,7 +2230,7 @@ pub fn test_tos_ipv4() {
     }
 }
 
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "android", target_os = "linux"))]
 #[test]
 pub fn test_tclass_ipv6() {
     use nix::sys::socket::sockopt::{Ipv6RecvTClass, Ipv6TClass};

@@ -385,7 +385,7 @@ sockopt_impl!(
     libc::SO_PRIORITY,
     libc::c_int
 );
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "android", target_os = "linux"))]
 #[cfg(feature = "net")]
 sockopt_impl!(
     #[cfg_attr(docsrs, doc(cfg(feature = "net")))]
@@ -397,7 +397,7 @@ sockopt_impl!(
     libc::IP_TOS,
     libc::c_int
 );
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "android", target_os = "linux"))]
 #[cfg(feature = "net")]
 sockopt_impl!(
     #[cfg_attr(docsrs, doc(cfg(feature = "net")))]

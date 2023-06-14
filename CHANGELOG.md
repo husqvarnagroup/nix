@@ -52,6 +52,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 - Use I/O safety with `copy_file_range`, and expose it on FreeBSD.
   (#[1906](https://github.com/nix-rust/nix/pull/1906))
 - Added `IP_RECVTOS` and `IPV6_RECVTCLASS` socket options. ([#2081](https://github.com/nix-rust/nix/pull/2081))
+- Enabled `IP_TOS` and `IPV6_TCLASS` socket options on Android. ([#2081](https://github.com/nix-rust/nix/pull/2081))
 
 ### Changed
 
